@@ -38,6 +38,7 @@ jobs:
           echo "TAG_NAME=v${BL_VER}-${SHORT_HASH}" >> "$GITHUB_ENV"
           echo "RELEASE_NAME=${APP_NAME} v${BL_VER} & Nyx v${NYX_VER} (${SHORT_HASH})" >> "$GITHUB_ENV"
           echo "FINAL_ZIP=hekate_ctcaer_${BL_VER}_Nyx_${NYX_VER}_sc.zip" >> "$GITHUB_ENV"
+          echo "BL_VER=$BL_VER" >> "$GITHUB_ENV"
 
       - name: Build
         run: make -j$(nproc) all
@@ -56,6 +57,7 @@ jobs:
           ZIP_FILE="${{ env.ASSET_NAME }}"
           UNZIP_DIR="hekate_tmp"
           unzip -q "$ZIP_FILE" -d "$UNZIP_DIR"
+          cp -f output/hekate.bin "output/hekate_ctcaer_${{ env.BL_VER }}.bin"
           cp -f output/hekate.bin "$UNZIP_DIR"/hekate_ctcaer_*.bin
           cp -f output/hekate.bin "$UNZIP_DIR"/bootloader/update.bin
           cp -f output/nyx.bin "$UNZIP_DIR"/bootloader/sys/nyx.bin
@@ -74,3 +76,5 @@ jobs:
           make_latest: true
           files: |
             ${{ env.FINAL_ZIP }}
+            output/hekate_ctcaer_*.bin
+            output/nyx.bin
